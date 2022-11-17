@@ -1,0 +1,101 @@
+*** Proje Codefirst ile tasarlanmıştır.
+*** Proje .NET Framework 4.7.2 versiyonudur.
+*** Proje MVC Şablonu üzerine create edilmiştir. MVC içeriği (Model, View ve Controller).
+*** MVC Model : Database ile ilgilidir.
+    MVC View : Front End tarafıdır.
+    MVC Controller : Back End tarafıdır.
+
+1.Adım ) Shared klasörü içinde View tıklarız. Layout ekleriz. Ama siteyi webde çalıştırmaya yetmez.
+	   Bu yüzden Controller kısmına geçeriz. Controller kısmıda işin back-end tarafıdır.
+
+2.Adım ) Controllers/HomeController.cs dosyasını inceleriz. Burdaki işlemler metotla yapılır.
+	   Controllers klasörüne sağ tıklayıp, boş bir controler ekleriz. (MVC 5 Controller - Empty)
+	   Açılan yeni ekranda DefaultController bir takım değerlerini Controller sınıfından miras alıyor.
+	   Metodun adı Index, tipi ActionResult, erişim belirleyici türü public, bir tanede sayfa döndürüyor(return view)
+	   Index'e sağ tıklayıp, Add View, use layout tik at, 3 noktaya tıkla, shared klasöründeki testlayout tıkla.
+	   İndex.cshtml view web dersek sayfa çalışmaz, testlayout'a gidip div kısmına @RenderBody() yazarız.
+	   Aslında RenderBody kısmı, index.cshtml sayfası olur.
+
+3.Adım )  Tüm HTML ve CSS dosyalarını Projenin içine dahil ederiz boş klasör açıp.
+	    ?? Üst tarafımız layout, alt tarafımız Content olsun ??
+	    Sayfayı herzaman index.cshtml kısmından çalıştırırız. Bu Sayfa bizim Content kısmımız.
+	    _TestLayout sayfasında fotoğrafların olduğu klasör uzantılarını değiştiririz.
+
+4.ADIM )  Index.html dosyasında kodların hepsi Index.cshtml dosyasına aktarırız. Bu adımla birlikte index sayfasını
+	    tamamen MVC'ye taşımış oluruz.
+
+5.ADIM )  Her bir menü için Controller hazırlamamız gereklidir. Ama About kısmı için DefaultController'i da kullanabiliriz
+	    'About' metotu uygularız ActionResult değişkeni için. About'a sağ click yaparız ve Add view deriz. TestLayout'a
+	    yükleme yapılır. TestLayout ekranından linklerde düzeltme yaparız. HTML linklerini düzeltiriz.
+---------------------------------------------------------------------------------------------------------
+BU ADIMA KADAR MVC YAPISI İLE HAZIR ALDIGIMIZ HTML,CSS VE JS DOSYALARINI BİRLEŞTİRMİŞ OLDUK. ŞİMDİ CODEFIRST
+İLE DEVAM EDERİZ. CODEFIRST, C# İLE KOD YAZARAK DATABASE GELİŞTİRMEMİZİ SAĞLAR.
+---------------------------------------------------------------------------------------------------------
+6.7.ADIM )Models klasörüne sağ click yeni klasör açarız, Siniflar klasörü isminde. Anasayfa adında class açarız içine.
+	    ID, Baslik ve Acıklama adında 3 property(public string Baslik get set) gireriz. En başa [Key] yazıp,
+	    DataAnnotations kütüphanesini aktif ettiririz. Aynı işlemleri Blog, Hakkimizda, iletisim, Admin, adres vs.
+
+8.ADIM )  DBCONTEXT VE ENTİTY FRAMEWORK DAHİL ETME : Sınıfların içine Context adında class açarız.
+	    Daha sonra ise en yukardaki TravelTripProje sağ click yapıp Manage Nuget Packages diyip "EntityFW" kurarız.
+	    Sonra ise Context sınıfı içinde yukarı kütüphaneye Data.Entity dahil ederiz. Sonra classımıza "DbContext"
+	    miras veririz. Daha sonra ise bu class içine, az önce açtığımız tüm classları ;
+	    public DbSet<Admin>Admins {getset} şeklinde ekleriz. 1.admin claasımızı, 2.admins veri tabanımızı ifade eder.
+
+9.ADIM )  CODEFIRST İLİŞKİLER : ??? Bloglar ile Yorumlar arasında ilişki kurarız ???
+	    Bundan dolayıda Yorumlar class'ına Blog adında bir Blog değişkeni, 
+	                    Blog classına ICollection adında interface açıp <Yorumlar> yorumlar get set yazarız.
+
+10.ADIM ) WEB CONFİG ENTİTY CONNECTİNON BAĞLANTISI : Web.config kısmının en altına database kodlarını yazarız.
+	    NOT : Context sınıfı içinde tablolarımızın adı oldugu için yazarız. DİKKAT!!!!
+---------------------------------------------------------------------------------------------------------------
+YUKARIDAKİ ADIMLARDA MANUEL OLARAK SQL VERİ TABANINI YAZIP, WEB CONFİG KISMINA DA DBMİZİ YAZDIK
+---------------------------------------------------------------------------------------------------------------
+11.ADIM ) MIGRATIONS İŞLEMLERİ : Yukarıdaki panelden View/Other Windows/Backage Manager tıklarız.
+	    Açılan Konsola "Enable-Migrations" yazarız. True yazarız. Daha sonra ise yine konsol ekranına
+	    "update-database" yazıp enter deriz. BÖYLELIKLE DATABASE'I KURMUŞ OLURUZ. YANİ CODEFIRST KULLANARAK
+	    DATABASE'I KURMUŞ OLDUK.
+
+12.ADIM ) HAKKIMIZDA SAYFASI VERİLERİ LİSTELEME : Web sitesindeki sekmelere ayrı ayrı Controllar açmamız gerekir.
+	    Add diyip AboutController açarız. Sonra açılan sayfada View eklememiz gerekir. Index'e sağ tıklayıp yaparız.
+	    About.cshtml dosyasını kopayalım, About klasöründe yeni açılan index.cshtml dosyasına yapıştırırz.
+	    _Testlayout kısmınada dönüp Menüler kısmındaki Default yazan yerleri About/Index olarak değiştiririz.
+
+	    Sonra devam ederiz işlemlerimize....
+	    AboutController'a geliriz, using traveltripproge.models.siniflar yazarız kütüphane kısmına.
+	    Sonra ise Context sınıfından da bir nesne türetiriz. örn: new Context();
+	    Context c= new Context();
+        public ActionResult Index()
+        {
+            var degerler=c.Hakkimizdas.ToList(); //listeye dökme
+            return View(degerler);
+        }
+	    
+	   Sonra devam ederiz işlemlerimize.
+	   index.cshtml açarız. model ismindeki klasörüme ulaşderiz yani using travel.model.sınıflar
+	   hemen altına model isminde bir komut oluşturdum. burdada bir liste tut deriz . yani
+	   @model List<Hakkimizda>
+	   NOT : MVC'DE LİSTELEME YAPMAK İÇİN KULLANILAN DÖNGÜ FOREACH DÖNGÜSÜDÜR. BUNDAN DOLAYIDA..
+	   <div class="content">
+    	   <div class="wrap">
+        <div class="about">
+            <h3>Hakkımızda</h3>
+            <img src="~/webb/images/about_banner.jpg" alt="" />
+            @foreach (var x in Model) //var=değişken türü  x=ismi   in=içinden  Model=değişkenleri nerden alcal
+            {
+                <p>@x.Aciklama </p>
+            }
+
+
+        </div>
+    </div>
+</div>
+
+	    
+	    
+
+	    
+	    
+	   
+
+
+
